@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math for 4AK</title>
+  <style>
+    :root {
+      --ink: #26224f;
+      --muted: #5d5b8a;
+      --midnight: #fdf7ff;
+      --navy: #B8E3E9;
+      --violet: #B298E7;
+      --mist: #B8E3E9;
+      --lavender: #B298E7;
+      --lavender-2: #d8ccff;
+      --sky: #B8E3E9;
+      --pink-lavender: #F5B8D5;
+      --candy: #F9BEDD;
+      --cream: #fff9fe;
+      --glass: rgba(255,255,255,.54);
+      --glass-2: rgba(255,255,255,.74);
+      --good: #2f9d78;
+      --warn: #b97812;
+      --bad: #d94e78;
+      --shadow: 0 24px 70px rgba(66,54,119,.20);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 14% 10%, rgba(178,152,231,.55), transparent 30%),
+        radial-gradient(circle at 86% 16%, rgba(249,190,221,.62), transparent 32%),
+        radial-gradient(circle at 48% 78%, rgba(184,227,233,.72), transparent 42%),
+        radial-gradient(circle at 20% 92%, rgba(245,184,213,.50), transparent 34%),
+        linear-gradient(135deg, #fff7fd 0%, #f6ecff 28%, #dff7fb 58%, #ffe0ef 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(178,152,231,.13) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,184,213,.11) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.50), transparent 85%);
+      pointer-events: none;
+    }
+
+    .app-shell {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 26px 0 52px;
+      position: relative;
+      z-index: 1;
+    }
+
+    header.hero {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 22px;
+      align-items: stretch;
+      margin-bottom: 22px;
+    }
+
+    .hero-card, .panel, .stat-card, .mini-card {
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.78), rgba(255,255,255,.42)),
+        linear-gradient(180deg, rgba(178,152,231,.14), rgba(249,190,221,.12));
+      border: 1px solid rgba(255,255,255,.72);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      border-radius: var(--radius-xl);
+    }
+
+    .hero-card {
+      padding: clamp(24px, 4vw, 42px);
+      min-height: 280px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "× 1 → × 12";
+      position: absolute;
+      right: -18px;
+      bottom: 18px;
+      font-size: clamp(42px, 8vw, 98px);
+      font-weight: 900;
+      letter-spacing: -5px;
+      color: rgba(178,152,231,.16);
+      white-space: nowrap;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(178,152,231,.26), rgba(249,190,221,.24));
+      border: 1px solid rgba(255,255,255,.72);
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .school-logo-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(255,255,255,.92), rgba(249,190,221,.30));
+      border: 1px solid rgba(255,255,255,.86);
+      box-shadow: 0 14px 32px rgba(0,0,0,.18);
+      text-decoration: none;
+    }
+
+    .school-logo {
+      display: block;
+      height: 86px;
+      width: auto;
+      max-width: min(100%, 380px);
+      object-fit: contain;
+      filter: drop-shadow(0 8px 20px rgba(80,64,130,.18));
+    }
+
+    h1 {
+      margin: 20px 0 10px;
+      font-size: clamp(42px, 8vw, 88px);
+      line-height: .88;
+      letter-spacing: -4px;
+      max-width: 680px;
+    }
+
+    .hero-copy {
+      color: var(--muted);
+      max-width: 650px;
+      font-size: clamp(16px, 2vw, 19px);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .hero-side {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .daily-focus {
+      flex: 1;
+      padding: 24px;
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(145deg, rgba(184,227,233,.62), rgba(245,184,213,.45));
+      border: 1px solid rgba(255,255,255,.76);
+    }
+
+    .focus-title { color: var(--muted); margin: 0 0 10px; font-weight: 800; text-transform: uppercase; font-size: 13px; letter-spacing: .08em; }
+    .focus-number { font-size: clamp(54px, 9vw, 96px); line-height: .85; font-weight: 950; letter-spacing: -5px; margin: 0; }
+    .focus-sub { color: var(--muted); margin: 12px 0 0; line-height: 1.4; }
+
+    nav {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin: 18px 0 22px;
+      position: sticky;
+      top: 10px;
+      z-index: 5;
+    }
+
+    .tab-btn, button, select, input {
+      font: inherit;
+    }
+
+    .tab-btn, .primary-btn, .ghost-btn, .chip {
+      border: 0;
+      color: var(--ink);
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease, border-color .18s ease, box-shadow .18s ease;
+    }
+
+    .tab-btn {
+      padding: 15px 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.52);
+      border: 1px solid rgba(255,255,255,.72);
+      backdrop-filter: blur(14px);
+      font-weight: 800;
+      color: var(--muted);
+    }
+    .tab-btn:hover, .tab-btn.active { transform: translateY(-2px); background: linear-gradient(135deg, rgba(178,152,231,.55), rgba(249,190,221,.42)); color: #26224f; box-shadow: 0 14px 35px rgba(80,64,130,.16); }
+
+    main { display: grid; gap: 22px; }
+    .screen { display: none; }
+    .screen.active { display: block; animation: rise .28s ease both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .panel { padding: clamp(18px, 3vw, 30px); }
+    .section-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 18px; margin-bottom: 22px; }
+    h2 { margin: 0 0 8px; font-size: clamp(28px, 4vw, 44px); letter-spacing: -2px; }
+    .lead { margin: 0; color: var(--muted); line-height: 1.55; }
+
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    select, input[type="number"], input[type="text"] {
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.76);
+      color: var(--ink);
+      padding: 13px 14px;
+      outline: none;
+    }
+    input::placeholder { color: rgba(93,91,138,.62); }
+
+    .primary-btn, .ghost-btn {
+      border-radius: 16px;
+      padding: 13px 17px;
+      font-weight: 900;
+    }
+    .primary-btn {
+      background: linear-gradient(135deg, var(--lavender), var(--pink-lavender) 54%, var(--sky));
+      color: #26224f;
+      box-shadow: 0 14px 28px rgba(178,152,231,.28);
+    }
+    .ghost-btn { background: rgba(255,255,255,.58); border: 1px solid rgba(255,255,255,.72); }
+    .primary-btn:hover, .ghost-btn:hover, .chip:hover { transform: translateY(-2px); }
+
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 18px;
+    }
+
+    .question-card {
+      min-height: 380px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(249,190,221,.54), transparent 45%),
+        linear-gradient(145deg, rgba(255,255,255,.62), rgba(184,227,233,.38));
+      border: 1px solid rgba(255,255,255,.76);
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-ring {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .timer-pill {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.62);
+      border: 1px solid rgba(255,255,255,.76);
+      font-weight: 900;
+    }
+
+    .question {
+      font-size: clamp(58px, 10vw, 112px);
+      font-weight: 950;
+      letter-spacing: -5px;
+      margin: 20px 0 24px;
+    }
+
+    .answer-row { display: flex; gap: 10px; width: min(470px, 100%); }
+    .answer-row input { flex: 1; text-align: center; font-size: 28px; font-weight: 900; padding: 16px; }
+    .answer-row button { min-width: 118px; }
+
+    .feedback { min-height: 32px; margin-top: 18px; font-size: 22px; font-weight: 900; }
+    .feedback.good { color: var(--good); }
+    .feedback.bad { color: var(--bad); }
+
+    .side-stack { display: grid; gap: 14px; }
+    .stat-card { padding: 20px; border-radius: var(--radius-lg); box-shadow: 0 16px 48px rgba(80,64,130,.14); }
+    .stat-label { color: var(--muted); text-transform: uppercase; font-size: 12px; font-weight: 900; letter-spacing: .08em; margin-bottom: 8px; }
+    .stat-value { font-size: 34px; line-height: 1; font-weight: 950; letter-spacing: -1px; }
+
+    .chips { display: flex; gap: 10px; flex-wrap: wrap; }
+    .chip {
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.58);
+      border: 1px solid rgba(255,255,255,.72);
+      color: var(--muted);
+      font-weight: 850;
+    }
+    .chip.active { background: linear-gradient(135deg, rgba(178,152,231,.58), rgba(249,190,221,.46)); color: #26224f; border-color: rgba(255,255,255,.9); }
+
+    .table-board {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .fact-line {
+      display: grid;
+      grid-template-columns: 1fr 110px;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.54);
+      border: 1px solid rgba(255,255,255,.72);
+      font-weight: 900;
+      font-size: 19px;
+    }
+    .fact-line input { width: 100%; text-align: center; font-size: 18px; font-weight: 900; padding: 10px; }
+    .fact-line.correct { outline: 2px solid rgba(102,230,179,.55); }
+    .fact-line.incorrect { outline: 2px solid rgba(255,122,144,.55); }
+
+    .call-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 18px;
+    }
+    .flashcard {
+      min-height: 420px;
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(249,190,221,.64), transparent 34%),
+        linear-gradient(145deg, rgba(255,255,255,.66), rgba(184,227,233,.42));
+      border: 1px solid rgba(255,255,255,.78);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 28px;
+      position: relative;
+    }
+    .flash-question { font-size: clamp(48px, 8vw, 94px); font-weight: 950; letter-spacing: -4px; }
+    .flash-answer { margin-top: 16px; color: var(--good); font-size: clamp(34px, 6vw, 74px); font-weight: 950; }
+
+    .instruction-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+    .instruction-list li {
+      padding: 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.54);
+      border: 1px solid rgba(255,255,255,.72);
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .instruction-list strong { color: var(--ink); }
+
+    .progress-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 18px; }
+    .bar-wrap { height: 12px; background: rgba(255,255,255,.58); border-radius: 999px; overflow: hidden; margin-top: 12px; }
+    .bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--lavender), var(--pink-lavender), var(--sky)); border-radius: inherit; transition: width .4s ease; }
+    .history { margin-top: 18px; display: grid; gap: 10px; }
+    .history-row { display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 16px; background: rgba(255,255,255,.07); color: var(--muted); }
+    .history-row strong { color: var(--ink); }
+
+    .footer-note { margin-top: 24px; color: rgba(38,34,79,.70); font-size: 13px; line-height: 1.5; text-align: center; }
+    .maker-credit { margin: 10px 0 0; color: #26224f; font-size: 15px; font-weight: 900; text-align: center; letter-spacing: .01em; }
+
+
+    .matrix-panel { overflow: hidden; }
+    .matrix-wrap {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(249,190,221,.72), transparent 28%),
+        radial-gradient(circle at 88% 12%, rgba(184,227,233,.72), transparent 28%),
+        linear-gradient(145deg, rgba(255,255,255,.66), rgba(216,204,255,.36));
+      border: 1px solid rgba(255,255,255,.82);
+      box-shadow: 0 18px 50px rgba(80,64,130,.13);
+      overflow-x: auto;
+    }
+    .matrix-grid {
+      min-width: 760px;
+      display: grid;
+      grid-template-columns: repeat(13, minmax(44px, 1fr));
+      gap: 7px;
+    }
+    .matrix-cell {
+      min-height: 44px;
+      display: grid;
+      place-items: center;
+      border-radius: 13px;
+      background: rgba(255,255,255,.60);
+      border: 1px solid rgba(255,255,255,.72);
+      color: #26224f;
+      font-weight: 900;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.78);
+      transition: transform .16s ease, background .16s ease, box-shadow .16s ease;
+    }
+    .matrix-cell.header {
+      background: linear-gradient(135deg, rgba(178,152,231,.72), rgba(249,190,221,.58));
+      color: #fff;
+      text-shadow: 0 1px 10px rgba(38,34,79,.20);
+    }
+    .matrix-cell.corner { background: rgba(255,255,255,.34); color: var(--muted); }
+    .matrix-cell.fact:hover {
+      transform: translateY(-2px) scale(1.04);
+      background: linear-gradient(135deg, rgba(184,227,233,.78), rgba(249,190,221,.60));
+      box-shadow: 0 12px 26px rgba(80,64,130,.16);
+    }
+    .matrix-cell.highlight { background: linear-gradient(135deg, rgba(249,190,221,.70), rgba(178,152,231,.58)); }
+    .matrix-tips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 16px; }
+
+    .thumb-up {
+      position: fixed;
+      bottom: -54px;
+      left: var(--left, 50%);
+      z-index: 80;
+      pointer-events: none;
+      font-size: var(--size, 34px);
+      filter: drop-shadow(0 12px 16px rgba(80,64,130,.18));
+      animation: thumb-rise var(--dur, 1850ms) cubic-bezier(.16,.88,.22,1) forwards;
+    }
+
+    @keyframes thumb-rise {
+      0% { transform: translate3d(0, 0, 0) rotate(var(--rot, 0deg)) scale(.72); opacity: 0; }
+      12% { opacity: 1; }
+      62% { opacity: .96; transform: translate3d(var(--drift, 0px), -52vh, 0) rotate(calc(var(--rot, 0deg) * -1)) scale(1.12); }
+      100% { opacity: 0; transform: translate3d(calc(var(--drift, 0px) * 1.35), -88vh, 0) rotate(var(--rot2, 18deg)) scale(.94); }
+    }
+
+
+    .confetti {
+      position: fixed;
+      width: var(--w, 9px);
+      height: var(--h, 14px);
+      pointer-events: none;
+      z-index: 78;
+      opacity: .95;
+      border-radius: var(--r, 4px);
+      box-shadow: 0 0 22px rgba(178,152,231,.32), 0 0 8px rgba(249,190,221,.22);
+      animation: confetti-pop var(--dur, 1750ms) cubic-bezier(.15,.8,.28,1) forwards;
+      transform: translate3d(0,0,0) rotate(0deg);
+    }
+
+    .confetti.spark {
+      border-radius: 999px;
+      filter: blur(.1px);
+    }
+
+    @keyframes confetti-pop {
+      0% { transform: translate3d(0,0,0) rotate(0deg) scale(.75); opacity: 0; }
+      10% { opacity: 1; }
+      100% { transform: translate3d(var(--x), var(--y), 0) rotate(var(--rot)) scale(1); opacity: 0; }
+    }
+
+    .celebration-bubble {
+      position: fixed;
+      left: 50%;
+      top: 24%;
+      transform: translate(-50%, -50%) scale(.92);
+      z-index: 69;
+      padding: 14px 18px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(178,152,231,.70), rgba(249,190,221,.62));
+      border: 1px solid rgba(255,255,255,.86);
+      box-shadow: 0 24px 70px rgba(80,64,130,.18);
+      color: #26224f;
+      font-weight: 950;
+      letter-spacing: -.2px;
+      backdrop-filter: blur(14px);
+      animation: bubble-rise 1050ms ease forwards;
+      pointer-events: none;
+    }
+
+    @keyframes bubble-rise {
+      0% { opacity: 0; transform: translate(-50%, -36%) scale(.86); }
+      18% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -95%) scale(.98); }
+    }
+
+    @media (max-width: 900px) {
+      header.hero, .quiz-grid, .call-card { grid-template-columns: 1fr; }
+      nav { grid-template-columns: repeat(2, 1fr); position: static; }
+      .progress-grid, .matrix-tips { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      .app-shell { width: min(100% - 18px, 1180px); padding-top: 12px; }
+      .hero-card, .panel, .hero-side { border-radius: 22px; padding: 18px; }
+      h1 { letter-spacing: -2px; }
+      .brand-row { gap: 12px; }
+      .school-logo-link { width: 100%; justify-content: flex-start; }
+      .school-logo { height: 68px; }
+      .table-board, .progress-grid, .matrix-tips { grid-template-columns: 1fr; }
+      .answer-row { flex-direction: column; }
+      .history-row { grid-template-columns: 1fr; }
+      .question { letter-spacing: -3px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <section class="hero-card" aria-labelledby="app-title">
+        <div class="brand-row">
+          <a class="school-logo-link" href="https://bulimbass.eq.edu.au/" target="_blank" rel="noopener noreferrer" aria-label="Visit Bulimba State School website">
+            <img class="school-logo" src="https://bulimbass.eq.edu.au/SiteCollectionImages/sitelogo.png" alt="Bulimba State School logo" />
+          </a>
+          <span class="eyebrow">Bulimba State School · Grade 4 · 4AK</span>
+        </div>
+        <h1 id="app-title">Math for 4AK</h1>
+        <p class="hero-copy">A playful daily rapid-recall practice app for every table from 1× to 12×. Do your Daily Ten, write your tables out, use the 12×12 matrix reminder, then try call-and-response with someone at home. Thanks Mrs. Allan for sending the homework!</p>
+      </section>
+      <aside class="hero-side hero-card">
+        <div class="daily-focus">
+          <p class="focus-title">Today’s mission</p>
+          <p class="focus-number" id="todayMission">2×</p>
+          <p class="focus-sub" id="todayMissionText">Warm up with one table, then mix every fact from 1× to 12×.</p>
+        </div>
+        <button class="primary-btn" id="quickStartBtn">Start Daily Ten</button>
+      </aside>
+    </header>
+
+    <nav aria-label="App sections">
+      <button class="tab-btn active" data-screen="daily">Daily Ten</button>
+      <button class="tab-btn" data-screen="write">Write Tables</button>
+      <button class="tab-btn" data-screen="call">Call & Response</button>
+      <button class="tab-btn" data-screen="matrix">12×12 Matrix</button>
+      <button class="tab-btn" data-screen="progress">Progress</button>
+    </nav>
+
+    <main>
+      <section class="screen active" id="daily">
+        <div class="panel">
+          <div class="section-top">
+            <div>
+              <h2>Top Marks – Daily Ten</h2>
+              <p class="lead">Ten fast questions. Choose a table, type the answer, press Enter, and beat yesterday’s score.</p>
+            </div>
+            <div class="controls">
+              <select id="quizTable" aria-label="Choose table">
+                <option value="mixed">Mixed 1× to 12×</option>
+                <option value="1">1× table</option>
+                <option value="2">2× table</option>
+                <option value="3">3× table</option>
+                <option value="4">4× table</option>
+                <option value="5">5× table</option>
+                <option value="6">6× table</option>
+                <option value="7">7× table</option>
+                <option value="8">8× table</option>
+                <option value="9">9× table</option>
+                <option value="10">10× table</option>
+                <option value="11">11× table</option>
+                <option value="12">12× table</option>
+              </select>
+              <button class="primary-btn" id="startQuizBtn">New Daily Ten</button>
+            </div>
+          </div>
+
+          <div class="quiz-grid">
+            <div class="question-card">
+              <div class="progress-ring" id="quizProgress">Question 1 of 10</div>
+              <div class="timer-pill" id="timer">00:00</div>
+              <div class="question" id="questionText">Ready?</div>
+              <div class="answer-row">
+                <input id="answerInput" type="number" inputmode="numeric" placeholder="Answer" aria-label="Answer" disabled />
+                <button class="primary-btn" id="submitAnswerBtn" disabled>Check</button>
+              </div>
+              <div class="feedback" id="feedback">Pick a table and start.</div>
+            </div>
+            <aside class="side-stack">
+              <div class="stat-card">
+                <div class="stat-label">Score</div>
+                <div class="stat-value"><span id="score">0</span>/10</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Streak</div>
+                <div class="stat-value" id="streak">0</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Best Daily Ten</div>
+                <div class="stat-value" id="bestScore">—</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Practice Tip</div>
+                <p class="lead">Say the full fact aloud: “Seven fives are thirty-five.” It helps memory lock in.</p>
+              </div>
+              <button class="ghost-btn" id="openMatrixBtn">Open 12×12 Matrix</button>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="write">
+        <div class="panel">
+          <div class="section-top">
+            <div>
+              <h2>Write your tables out</h2>
+              <p class="lead">Choose a table and fill every answer. This is the calm, pencil-and-paper style practice — but with instant checking.</p>
+            </div>
+            <div class="controls">
+              <div class="chips" aria-label="Choose write table">
+                <button class="chip active" data-write="1">1×</button>
+                <button class="chip" data-write="2">2×</button>
+                <button class="chip" data-write="3">3×</button>
+                <button class="chip" data-write="4">4×</button>
+                <button class="chip" data-write="5">5×</button>
+                <button class="chip" data-write="6">6×</button>
+                <button class="chip" data-write="7">7×</button>
+                <button class="chip" data-write="8">8×</button>
+                <button class="chip" data-write="9">9×</button>
+                <button class="chip" data-write="10">10×</button>
+                <button class="chip" data-write="11">11×</button>
+                <button class="chip" data-write="12">12×</button>
+              </div>
+              <button class="ghost-btn" id="clearWriteBtn">Clear</button>
+              <button class="primary-btn" id="checkWriteBtn">Check</button>
+            </div>
+          </div>
+          <div class="table-board" id="tableBoard"></div>
+          <p class="feedback" id="writeFeedback"></p>
+        </div>
+      </section>
+
+      <section class="screen" id="call">
+        <div class="panel">
+          <div class="section-top">
+            <div>
+              <h2>Call and response</h2>
+              <p class="lead">Ask someone to call out the number facts. Answer as fast as you can, then tap reveal.</p>
+            </div>
+            <div class="controls">
+              <select id="callTable" aria-label="Choose call and response table">
+                <option value="mixed">Mixed 1× to 12×</option>
+                <option value="1">1× table</option>
+                <option value="2">2× table</option>
+                <option value="3">3× table</option>
+                <option value="4">4× table</option>
+                <option value="5">5× table</option>
+                <option value="6">6× table</option>
+                <option value="7">7× table</option>
+                <option value="8">8× table</option>
+                <option value="9">9× table</option>
+                <option value="10">10× table</option>
+                <option value="11">11× table</option>
+                <option value="12">12× table</option>
+              </select>
+              <button class="primary-btn" id="newFlashBtn">New Card</button>
+            </div>
+          </div>
+          <div class="call-card">
+            <div class="flashcard">
+              <div>
+                <div class="flash-question" id="flashQuestion">6 × 5</div>
+                <div class="flash-answer" id="flashAnswer" hidden>30</div>
+              </div>
+            </div>
+            <aside class="side-stack">
+              <div class="stat-card">
+                <div class="stat-label">How to play</div>
+                <ul class="instruction-list">
+                  <li><strong>1.</strong> Parent or friend asks the fact.</li>
+                  <li><strong>2.</strong> Student answers out loud.</li>
+                  <li><strong>3.</strong> Tap reveal and check.</li>
+                  <li><strong>4.</strong> Try to answer in under 3 seconds.</li>
+                </ul>
+              </div>
+              <button class="ghost-btn" id="revealFlashBtn">Reveal Answer</button>
+              <button class="primary-btn" id="gotItBtn">I got it right</button>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="matrix">
+        <div class="panel matrix-panel">
+          <div class="section-top">
+            <div>
+              <h2>12×12 matrix reminder</h2>
+              <p class="lead">A bright multiplication grid for quick revision. Scan rows, spot patterns, then jump back into Daily Ten.</p>
+            </div>
+            <div class="controls">
+              <button class="primary-btn" id="matrixDailyBtn">Practise Mixed Daily Ten</button>
+            </div>
+          </div>
+          <div class="matrix-wrap" aria-label="Multiplication facts from 1 times 1 to 12 times 12">
+            <div class="matrix-grid" id="matrixGrid"></div>
+          </div>
+          <div class="matrix-tips">
+            <div class="mini-card stat-card"><div class="stat-label">Pattern</div><p class="lead">The 5× facts end in 0 or 5. The 10× facts add a zero.</p></div>
+            <div class="mini-card stat-card"><div class="stat-label">Shortcut</div><p class="lead">Use doubles: 4× is double 2×, and 8× is double 4×.</p></div>
+            <div class="mini-card stat-card"><div class="stat-label">Confidence</div><p class="lead">Cover one row and call the facts out loud in under 30 seconds.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" id="progress">
+        <div class="panel">
+          <div class="section-top">
+            <div>
+              <h2>Progress dashboard</h2>
+              <p class="lead">This stays on this device using local storage. No login. No internet. Just daily practice.</p>
+            </div>
+            <button class="ghost-btn" id="resetProgressBtn">Reset progress</button>
+          </div>
+
+          <div class="progress-grid">
+            <div class="stat-card">
+              <div class="stat-label">Daily Tens completed</div>
+              <div class="stat-value" id="completedCount">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Best score</div>
+              <div class="stat-value" id="dashBestScore">—</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Best time</div>
+              <div class="stat-value" id="dashBestTime">—</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Last practice</div>
+              <div class="stat-value" id="lastPractice">—</div>
+            </div>
+          </div>
+
+          <div class="progress-grid">
+            <div class="mini-card stat-card">
+              <div class="stat-label">2× confidence</div>
+              <div class="bar-wrap"><div class="bar" id="bar2"></div></div>
+            </div>
+            <div class="mini-card stat-card">
+              <div class="stat-label">5× confidence</div>
+              <div class="bar-wrap"><div class="bar" id="bar5"></div></div>
+            </div>
+            <div class="mini-card stat-card">
+              <div class="stat-label">10× confidence</div>
+              <div class="bar-wrap"><div class="bar" id="bar10"></div></div>
+            </div>
+            <div class="mini-card stat-card">
+              <div class="stat-label">Mixed confidence</div>
+              <div class="bar-wrap"><div class="bar" id="barMixed"></div></div>
+            </div>
+          </div>
+
+          <div class="history" id="historyList"></div>
+        </div>
+      </section>
+    </main>
+
+    <p class="footer-note">Designed for Math for 4AK · Focus: rapid recall of 1× to 12× multiplication facts, building towards Year 4 fluency.</p>
+    <p class="maker-credit">Made by Julieta and Jorge</p>
+  </div>
+
+  <script>
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    const tables = Array.from({ length: 12 }, (_, i) => i + 1);
+    const factsMax = 12;
+    const storageKey = 'math-for-4ak-progress-v1';
+
+    let quiz = {
+      active: false,
+      questions: [],
+      index: 0,
+      score: 0,
+      streak: 0,
+      startTime: null,
+      timerId: null,
+      current: null
+    };
+
+    let progress = loadProgress();
+
+    function loadProgress() {
+      try {
+        return JSON.parse(localStorage.getItem(storageKey)) || { attempts: [], flashCorrect: 0 };
+      } catch {
+        return { attempts: [], flashCorrect: 0 };
+      }
+    }
+
+    function saveProgress() {
+      localStorage.setItem(storageKey, JSON.stringify(progress));
+      renderProgress();
+    }
+
+    function formatTime(seconds) {
+      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+      const s = Math.floor(seconds % 60).toString().padStart(2, '0');
+      return `${m}:${s}`;
+    }
+
+    function randomFact(tableChoice) {
+      const table = tableChoice === 'mixed' ? tables[Math.floor(Math.random() * tables.length)] : Number(tableChoice);
+      const multiplier = Math.floor(Math.random() * factsMax) + 1;
+      return { table, multiplier, answer: table * multiplier };
+    }
+
+    function makeQuestions(tableChoice) {
+      const qs = [];
+      for (let i = 0; i < 10; i++) qs.push(randomFact(tableChoice));
+      return qs;
+    }
+
+    function setScreen(id) {
+      $$('.screen').forEach(s => s.classList.toggle('active', s.id === id));
+      $$('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.screen === id));
+      if (id === 'progress') renderProgress();
+      if (id === 'matrix') renderMatrix();
+      if (id === 'daily') updateTodayMission($('#quizTable').value, 'Daily Ten');
+      if (id === 'write') updateTodayMission($('.chip.active').dataset.write, 'Write Tables');
+    }
+
+    $$('.tab-btn').forEach(btn => btn.addEventListener('click', () => setScreen(btn.dataset.screen)));
+    $('#quickStartBtn').addEventListener('click', () => { setScreen('daily'); startQuiz(); });
+    $('#startQuizBtn').addEventListener('click', startQuiz);
+    $('#openMatrixBtn').addEventListener('click', () => setScreen('matrix'));
+    $('#matrixDailyBtn').addEventListener('click', () => { $('#quizTable').value = 'mixed'; setScreen('daily'); startQuiz(); });
+    $('#submitAnswerBtn').addEventListener('click', submitAnswer);
+    $('#answerInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') submitAnswer(); });
+    $('#quizTable').addEventListener('change', () => updateTodayMission($('#quizTable').value, 'Daily Ten'));
+
+    function startQuiz() {
+      const choice = $('#quizTable').value;
+      updateTodayMission(choice, 'Daily Ten');
+      quiz = {
+        active: true,
+        questions: makeQuestions(choice),
+        index: 0,
+        score: 0,
+        streak: 0,
+        startTime: Date.now(),
+        timerId: null,
+        current: null,
+        tableChoice: choice
+      };
+      $('#score').textContent = '0';
+      $('#streak').textContent = '0';
+      $('#answerInput').disabled = false;
+      $('#submitAnswerBtn').disabled = false;
+      $('#feedback').textContent = 'Go!';
+      $('#feedback').className = 'feedback';
+      clearInterval(quiz.timerId);
+      quiz.timerId = setInterval(() => $('#timer').textContent = formatTime((Date.now() - quiz.startTime) / 1000), 250);
+      nextQuestion();
+    }
+
+    function nextQuestion() {
+      if (quiz.index >= quiz.questions.length) return finishQuiz();
+      quiz.current = quiz.questions[quiz.index];
+      $('#quizProgress').textContent = `Question ${quiz.index + 1} of 10`;
+      $('#questionText').textContent = `${quiz.current.multiplier} × ${quiz.current.table}`;
+      $('#answerInput').value = '';
+      $('#answerInput').focus();
+    }
+
+    function submitAnswer() {
+      if (!quiz.active) return;
+      const value = Number($('#answerInput').value);
+      if (!Number.isFinite(value) || $('#answerInput').value.trim() === '') {
+        $('#feedback').textContent = 'Type an answer first.';
+        $('#feedback').className = 'feedback bad';
+        return;
+      }
+      const correct = value === quiz.current.answer;
+      if (correct) {
+        quiz.score++;
+        quiz.streak++;
+        $('#feedback').textContent = 'Correct!';
+        $('#feedback').className = 'feedback good';
+        celebrateCorrect(quiz.streak);
+      } else {
+        quiz.streak = 0;
+        $('#feedback').textContent = `Not quite — ${quiz.current.multiplier} × ${quiz.current.table} = ${quiz.current.answer}`;
+        $('#feedback').className = 'feedback bad';
+        playOopsSound();
+      }
+      $('#score').textContent = quiz.score;
+      $('#streak').textContent = quiz.streak;
+      quiz.index++;
+      setTimeout(nextQuestion, correct ? 450 : 950);
+    }
+
+    function finishQuiz() {
+      quiz.active = false;
+      clearInterval(quiz.timerId);
+      const seconds = Math.round((Date.now() - quiz.startTime) / 1000);
+      $('#questionText').textContent = quiz.score === 10 ? 'Brilliant!' : 'Finished!';
+      $('#answerInput').disabled = true;
+      $('#submitAnswerBtn').disabled = true;
+      $('#feedback').textContent = `Score: ${quiz.score}/10 in ${formatTime(seconds)}.`;
+      $('#feedback').className = quiz.score >= 8 ? 'feedback good' : 'feedback';
+      if (quiz.score >= 8) { burstConfetti(quiz.score === 10 ? 190 : 120); launchThumbsUp(quiz.score === 10 ? 46 : 28); playSuccessSound(quiz.score === 10 ? 'big' : 'nice'); showCelebration(quiz.score === 10 ? 'Perfect 10! ✨' : 'Great work! ✨'); }
+      progress.attempts.unshift({
+        date: new Date().toISOString(),
+        table: quiz.tableChoice,
+        score: quiz.score,
+        seconds
+      });
+      progress.attempts = progress.attempts.slice(0, 30);
+      saveProgress();
+      updateBestInline();
+    }
+
+    function renderWriteTable(table = Number($('.chip.active').dataset.write)) {
+      const board = $('#tableBoard');
+      board.innerHTML = '';
+      for (let i = 1; i <= factsMax; i++) {
+        const row = document.createElement('div');
+        row.className = 'fact-line';
+        row.innerHTML = `<span>${i} × ${table} =</span><input type="number" inputmode="numeric" aria-label="${i} times ${table}" data-answer="${i * table}">`;
+        board.appendChild(row);
+      }
+      $('#writeFeedback').textContent = '';
+      $('#writeFeedback').className = 'feedback';
+    }
+
+    $$('.chip[data-write]').forEach(chip => chip.addEventListener('click', () => {
+      $$('.chip[data-write]').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      renderWriteTable(Number(chip.dataset.write));
+      updateTodayMission(chip.dataset.write, 'Write Tables');
+    }));
+
+    $('#clearWriteBtn').addEventListener('click', () => {
+      renderWriteTable();
+      updateTodayMission($('.chip.active').dataset.write, 'Write Tables');
+    });
+    $('#checkWriteBtn').addEventListener('click', () => {
+      let correct = 0;
+      $$('.fact-line').forEach(row => {
+        const input = row.querySelector('input');
+        const ok = Number(input.value) === Number(input.dataset.answer);
+        row.classList.toggle('correct', ok);
+        row.classList.toggle('incorrect', input.value.trim() !== '' && !ok);
+        if (ok) correct++;
+      });
+      $('#writeFeedback').textContent = correct === factsMax ? 'Perfect table! Nicely done.' : `${correct}/${factsMax} correct. Fix the highlighted ones and check again.`;
+      $('#writeFeedback').className = correct === factsMax ? 'feedback good' : 'feedback bad';
+      if (correct === factsMax) { burstConfetti(150); launchThumbsUp(34); playSuccessSound('big'); showCelebration('Perfect table! 🌟'); }
+    });
+
+    function newFlashCard() {
+      const f = randomFact($('#callTable').value);
+      $('#flashQuestion').textContent = `${f.multiplier} × ${f.table}`;
+      $('#flashAnswer').textContent = f.answer;
+      $('#flashAnswer').hidden = true;
+    }
+
+    $('#newFlashBtn').addEventListener('click', newFlashCard);
+    $('#revealFlashBtn').addEventListener('click', () => { $('#flashAnswer').hidden = !$('#flashAnswer').hidden; });
+    $('#gotItBtn').addEventListener('click', () => {
+      progress.flashCorrect = (progress.flashCorrect || 0) + 1;
+      saveProgress();
+      burstConfetti(92);
+      launchThumbsUp(22);
+      playSuccessSound('nice');
+      showCelebration('Nice recall! ✨');
+      newFlashCard();
+    });
+
+    function renderProgress() {
+      const attempts = progress.attempts || [];
+      $('#completedCount').textContent = attempts.length;
+      const bestScore = attempts.length ? Math.max(...attempts.map(a => a.score)) : null;
+      const perfectTimes = attempts.filter(a => a.score === 10).map(a => a.seconds);
+      $('#dashBestScore').textContent = bestScore === null ? '—' : `${bestScore}/10`;
+      $('#dashBestTime').textContent = perfectTimes.length ? formatTime(Math.min(...perfectTimes)) : '—';
+      $('#lastPractice').textContent = attempts[0] ? new Date(attempts[0].date).toLocaleDateString('en-AU', { day:'numeric', month:'short' }) : '—';
+      updateBestInline();
+
+      const groups = { '2': [], '5': [], '10': [], mixed: [] };
+      attempts.forEach(a => { if (groups[a.table]) groups[a.table].push(a.score); });
+      const percent = arr => arr.length ? Math.round((arr.reduce((s,n) => s+n, 0) / (arr.length * 10)) * 100) : 0;
+      $('#bar2').style.width = percent(groups['2']) + '%';
+      $('#bar5').style.width = percent(groups['5']) + '%';
+      $('#bar10').style.width = percent(groups['10']) + '%';
+      $('#barMixed').style.width = percent(groups.mixed) + '%';
+
+      const history = $('#historyList');
+      history.innerHTML = attempts.length ? '' : '<div class="history-row"><strong>No attempts yet</strong><span>Start with Daily Ten</span><span>—</span></div>';
+      attempts.slice(0, 8).forEach(a => {
+        const row = document.createElement('div');
+        row.className = 'history-row';
+        const tableName = a.table === 'mixed' ? 'Mixed' : `${a.table}×`;
+        row.innerHTML = `<strong>${tableName} Daily Ten</strong><span>${a.score}/10</span><span>${formatTime(a.seconds)}</span>`;
+        history.appendChild(row);
+      });
+    }
+
+    function updateBestInline() {
+      const attempts = progress.attempts || [];
+      if (!attempts.length) { $('#bestScore').textContent = '—'; return; }
+      const best = attempts.reduce((a, b) => (b.score > a.score || (b.score === a.score && b.seconds < a.seconds)) ? b : a, attempts[0]);
+      $('#bestScore').textContent = `${best.score}/10`;
+    }
+
+    $('#resetProgressBtn').addEventListener('click', () => {
+      const ok = confirm('Reset all Math for 4AK progress on this device?');
+      if (!ok) return;
+      progress = { attempts: [], flashCorrect: 0 };
+      saveProgress();
+    });
+
+    let audioCtx;
+
+    function getAudioContext() {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playTone(freq, duration, start = 0, type = 'sine', volume = .065) {
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const t = ctx.currentTime + start;
+        osc.frequency.setValueAtTime(freq, t);
+        osc.type = type;
+        gain.gain.setValueAtTime(.0001, t);
+        gain.gain.exponentialRampToValueAtTime(volume, t + .012);
+        gain.gain.exponentialRampToValueAtTime(.0001, t + duration);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + duration + .03);
+      } catch {}
+    }
+
+    function playSuccessSound(mode = 'nice') {
+      const notes = mode === 'big' ? [523.25, 659.25, 783.99, 1046.5] : [659.25, 783.99, 987.77];
+      notes.forEach((note, i) => playTone(note, .11, i * .075, i % 2 ? 'triangle' : 'sine', .07));
+      if (mode === 'big') playTone(1318.51, .18, .31, 'triangle', .055);
+    }
+
+    function playOopsSound() {
+      playTone(196, .09, 0, 'sine', .045);
+      playTone(164.81, .1, .08, 'sine', .035);
+    }
+
+    function celebrateCorrect(streak = 1) {
+      playSuccessSound(streak >= 3 ? 'big' : 'nice');
+      burstConfetti(streak >= 3 ? 130 : 82);
+      launchThumbsUp(streak >= 3 ? 28 : 16);
+      if (streak >= 3) showCelebration(`${streak} in a row! ✨`);
+    }
+
+    function showCelebration(text) {
+      const old = document.querySelector('.celebration-bubble');
+      if (old) old.remove();
+      const bubble = document.createElement('div');
+      bubble.className = 'celebration-bubble';
+      bubble.textContent = text;
+      document.body.appendChild(bubble);
+      setTimeout(() => bubble.remove(), 1100);
+    }
+
+    function launchThumbsUp(count = 18) {
+      const emojis = ['👍', '👍🏻', '👍🏼', '👏', '⭐'];
+      for (let i = 0; i < count; i++) {
+        const thumb = document.createElement('div');
+        thumb.className = 'thumb-up';
+        thumb.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        thumb.style.setProperty('--left', (8 + Math.random() * 84) + 'vw');
+        thumb.style.setProperty('--size', (28 + Math.random() * 28) + 'px');
+        thumb.style.setProperty('--drift', ((Math.random() - .5) * 190) + 'px');
+        thumb.style.setProperty('--rot', ((Math.random() - .5) * 28) + 'deg');
+        thumb.style.setProperty('--rot2', ((Math.random() - .5) * 44) + 'deg');
+        thumb.style.setProperty('--dur', (1500 + Math.random() * 1050) + 'ms');
+        document.body.appendChild(thumb);
+        setTimeout(() => thumb.remove(), 2800);
+      }
+    }
+
+    function burstConfetti(count = 110) {
+      const colours = ['#B298E7', '#B8E3E9', '#F5B8D5', '#F9BEDD', '#fff7fd', '#d8ccff', '#ffd6ec', '#c9f5fb', '#ffffff'];
+      const originX = window.innerWidth / 2;
+      const originY = window.innerHeight * .22;
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement('div');
+        const isSpark = Math.random() > .66;
+        piece.className = `confetti${isSpark ? ' spark' : ''}`;
+        piece.style.left = originX + 'px';
+        piece.style.top = originY + 'px';
+        piece.style.background = colours[Math.floor(Math.random() * colours.length)];
+        piece.style.setProperty('--w', (isSpark ? 7 + Math.random() * 7 : 9 + Math.random() * 10) + 'px');
+        piece.style.setProperty('--h', (isSpark ? 7 + Math.random() * 7 : 14 + Math.random() * 18) + 'px');
+        piece.style.setProperty('--r', isSpark ? '999px' : (3 + Math.random() * 7) + 'px');
+        piece.style.setProperty('--x', ((Math.random() - .5) * Math.min(window.innerWidth * .98, 980)) + 'px');
+        piece.style.setProperty('--y', (170 + Math.random() * 470) + 'px');
+        piece.style.setProperty('--rot', ((Math.random() > .5 ? 1 : -1) * (540 + Math.random() * 980)) + 'deg');
+        piece.style.setProperty('--dur', (1350 + Math.random() * 1150) + 'ms');
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 2800);
+      }
+    }
+
+    function renderMatrix() {
+      const grid = $('#matrixGrid');
+      if (!grid || grid.children.length) return;
+      const makeCell = (text, className) => {
+        const cell = document.createElement('div');
+        cell.className = `matrix-cell ${className}`;
+        cell.textContent = text;
+        return cell;
+      };
+      grid.appendChild(makeCell('×', 'corner'));
+      for (let c = 1; c <= 12; c++) grid.appendChild(makeCell(c, 'header'));
+      for (let r = 1; r <= 12; r++) {
+        grid.appendChild(makeCell(r, 'header'));
+        for (let c = 1; c <= 12; c++) {
+          const cell = makeCell(r * c, 'fact');
+          if (r === c || r === 5 || c === 5 || r === 10 || c === 10) cell.classList.add('highlight');
+          cell.title = `${r} × ${c} = ${r * c}`;
+          grid.appendChild(cell);
+        }
+      }
+    }
+
+
+    function updateTodayMission(choice, source = 'Daily Ten') {
+      const isMixed = choice === 'mixed';
+      $('#todayMission').textContent = isMixed ? 'Mixed' : `${choice}×`;
+      $('#todayMissionText').textContent = isMixed
+        ? `${source}: practise a mixed set from 1× to 12×.`
+        : `${source}: focus on the ${choice} times table, then build speed and confidence.`;
+    }
+
+    function setTodayMission() {
+      updateTodayMission($('#quizTable').value, 'Daily Ten');
+    }
+
+    renderWriteTable(1);
+    newFlashCard();
+    renderMatrix();
+    setTodayMission();
+    renderProgress();
+  </script>
+</body>
+</html>
